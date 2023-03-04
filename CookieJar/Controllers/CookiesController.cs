@@ -54,7 +54,7 @@ namespace CookieJar.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCookie(int id, Cookie cookie)
         {
-            if (id != cookie.CookieId)
+            if (id != cookie.Id)
             {
                 return BadRequest();
             }
@@ -83,8 +83,19 @@ namespace CookieJar.Controllers
         // POST: api/Cookies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Cookie>> PostCookie(Cookie cookie)
+        public async Task<ActionResult<Cookie>> PostCookie(CreateCookieDto request)
         {
+            var user = await _context.Users.FindAsync(request.UserId);
+            if (user == null)
+                return NotFound();
+
+            var cookie = new Cookie
+            {
+                Title = request.Title,
+                Message = request.Message,
+                UserId = request.UserId
+            };
+
           if (_context.Cookies == null)
           {
               return Problem("Entity set 'AppDbContext.Cookies'  is null.");
@@ -92,7 +103,7 @@ namespace CookieJar.Controllers
             _context.Cookies.Add(cookie);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCookie", new { id = cookie.CookieId }, cookie);
+            return CreatedAtAction("GetCookie", new { id = cookie.Id }, cookie);
         }
 
         // DELETE: api/Cookies/5
@@ -117,7 +128,7 @@ namespace CookieJar.Controllers
 
         private bool CookieExists(int id)
         {
-            return (_context.Cookies?.Any(e => e.CookieId == id)).GetValueOrDefault();
+            return (_context.Cookies?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

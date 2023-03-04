@@ -28,7 +28,7 @@ namespace CookieJar.Controllers
           {
               return NotFound();
           }
-            return await _context.Tags.ToListAsync();
+            return await _context.Tags.Include(c => c.Cookies).ToListAsync();
         }
 
         // GET: api/Tags/5
@@ -54,7 +54,7 @@ namespace CookieJar.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTag(int id, Tag tag)
         {
-            if (id != tag.TagId)
+            if (id != tag.Id)
             {
                 return BadRequest();
             }
@@ -83,8 +83,17 @@ namespace CookieJar.Controllers
         // POST: api/Tags
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Tag>> PostTag(Tag tag)
+        public async Task<ActionResult<Tag>> PostTag(CreateTagDto request)
         {
+            var user = await _context.Users.FindAsync(request.UserId);
+            if (user == null)
+                return NotFound();
+
+            var tag = new Tag
+            {
+                Name = request.Name,
+                UserId = request.UserId,
+            };
           if (_context.Tags == null)
           {
               return Problem("Entity set 'AppDbContext.Tags'  is null.");
@@ -92,7 +101,27 @@ namespace CookieJar.Controllers
             _context.Tags.Add(tag);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTag", new { id = tag.TagId }, tag);
+            return CreatedAtAction("GetTag", new { id = tag.Id }, tag);
+        }
+
+
+        // POST: api/AddCookieTag
+        [HttpPost("CookieTag")]
+        public async Task<ActionResult<Cookie>> PostCookieTag(AddCookieTagDto request)
+        {
+            var cookie = await _context.Cookies.Where(c => c.Id == request.CookieId).Include(c => c.Tags).FirstOrDefaultAsync();
+            if (cookie == null)
+                return NotFound();
+
+            var tag = await _context.Tags.FindAsync(request.TagId);
+            if (tag == null)
+                return NotFound();
+
+
+            cookie.Tags.Add(tag);
+            await _context.SaveChangesAsync();
+
+            return cookie;
         }
 
         // DELETE: api/Tags/5
@@ -117,7 +146,7 @@ namespace CookieJar.Controllers
 
         private bool TagExists(int id)
         {
-            return (_context.Tags?.Any(e => e.TagId == id)).GetValueOrDefault();
+            return (_context.Tags?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,7 +14,7 @@ namespace CookieJar.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -23,29 +22,27 @@ namespace CookieJar.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Cookies",
                 columns: table => new
                 {
-                    CookieId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsPublic = table.Column<int>(type: "int", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", rowVersion: true, nullable: false)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cookies", x => x.CookieId);
+                    table.PrimaryKey("PK_Cookies", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Cookies_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -53,43 +50,43 @@ namespace CookieJar.Migrations
                 name: "Tags",
                 columns: table => new
                 {
-                    TagId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.TagId);
+                    table.PrimaryKey("PK_Tags", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Tags_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "UserId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cookies_Tag",
+                name: "CookieTag",
                 columns: table => new
                 {
-                    TagId = table.Column<int>(type: "int", nullable: false),
-                    CookieId = table.Column<int>(type: "int", nullable: false)
+                    CookiesId = table.Column<int>(type: "int", nullable: false),
+                    TagsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cookies_Tag", x => new { x.CookieId, x.TagId });
+                    table.PrimaryKey("PK_CookieTag", x => new { x.CookiesId, x.TagsId });
                     table.ForeignKey(
-                        name: "FK_Cookies_Tag_Cookies_CookieId",
-                        column: x => x.CookieId,
+                        name: "FK_CookieTag_Cookies_CookiesId",
+                        column: x => x.CookiesId,
                         principalTable: "Cookies",
-                        principalColumn: "CookieId",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Cookies_Tag_Tags_TagId",
-                        column: x => x.TagId,
+                        name: "FK_CookieTag_Tags_TagsId",
+                        column: x => x.TagsId,
                         principalTable: "Tags",
-                        principalColumn: "TagId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
 
@@ -99,9 +96,9 @@ namespace CookieJar.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cookies_Tag_TagId",
-                table: "Cookies_Tag",
-                column: "TagId");
+                name: "IX_CookieTag_TagsId",
+                table: "CookieTag",
+                column: "TagsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tags_UserId",
@@ -113,7 +110,7 @@ namespace CookieJar.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Cookies_Tag");
+                name: "CookieTag");
 
             migrationBuilder.DropTable(
                 name: "Cookies");

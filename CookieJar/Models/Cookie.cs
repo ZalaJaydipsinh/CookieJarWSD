@@ -1,32 +1,17 @@
-﻿using Microsoft.VisualBasic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Text.Json.Serialization;
 
 namespace CookieJar.Models
 {
     public class Cookie
     {
-        [Key]
-        [Required]
-        public int CookieId { get; set; }
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Message { get; set; } = string.Empty;
 
-        [Required]
+        [JsonIgnore]
+        public User User { get; set; }
         public int UserId { get; set; }
-        public User? Users { get; set; }
-
-        [Required]
-        public string? Title { get; set; }
-
-        [Required]
-        public string? Message { get; set; }
-
-        [Required]
-        public int IsPublic { get; set; }
-
-        [Required]
-        [Timestamp]
-        public DateTime? Timestamp { get; set; }
-
-        public IList<Cookie_Tag> Cookie_Tag { get; set; }
+        [JsonIgnore]
+        public IList<Tag> Tags { get; set; }
     }
 }

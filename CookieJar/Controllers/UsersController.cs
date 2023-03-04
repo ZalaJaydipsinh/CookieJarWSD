@@ -28,7 +28,7 @@ namespace CookieJar.Controllers
           {
               return NotFound();
           }
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Include(c => c.Cookies).Include(c=>c.Tags).ToListAsync();
         }
 
         // GET: api/Users/5
@@ -54,7 +54,7 @@ namespace CookieJar.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(int id, User user)
         {
-            if (id != user.UserId)
+            if (id != user.Id)
             {
                 return BadRequest();
             }
@@ -83,8 +83,14 @@ namespace CookieJar.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<User>> PostUser(CreateUserDto request)
         {
+            var user = new User
+            {
+                Name = request.Name,
+                Email = request.Email,
+                Password = request.Password
+            };
           if (_context.Users == null)
           {
               return Problem("Entity set 'AppDbContext.Users'  is null.");
@@ -92,7 +98,7 @@ namespace CookieJar.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
         // DELETE: api/Users/5
@@ -117,7 +123,7 @@ namespace CookieJar.Controllers
 
         private bool UserExists(int id)
         {
-            return (_context.Users?.Any(e => e.UserId == id)).GetValueOrDefault();
+            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

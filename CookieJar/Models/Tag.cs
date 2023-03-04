@@ -1,21 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Text.Json.Serialization;
 
 namespace CookieJar.Models
 {
     public class Tag
     {
-
-        [Key]
-        [Required]
-        public int TagId { get; set; }
-
-        [Required]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        [JsonIgnore]
+        public User User { get; set; }
         public int UserId { get; set; }
-        public User? Users { get; set; }
-
-        [Required]
-        public string? Name { get; set; }
-
-        public IList<Cookie_Tag> Cookie_Tag { get; set; }
+        public IList<Cookie> Cookies { get; set; }
     }
 }
