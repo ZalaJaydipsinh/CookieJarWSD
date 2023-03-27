@@ -86,6 +86,27 @@ namespace CookieJar.Controllers
             return NoContent();
         }
 
+        // GET: api/User/Cookies/5
+        [HttpGet("User/{id}")]
+        public async Task<ActionResult<IEnumerable<Cookie>>> GetUserCookies(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var cookies = await _context.Cookies.Where(c => c.UserId == user.Id).ToListAsync();
+
+            if(cookies == null)
+            {
+                return NotFound();
+            }
+
+            return cookies;
+        }
+
         // POST: api/Cookies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
