@@ -61,13 +61,6 @@ namespace CookieJar.Controllers
                 return NotFound();
             }     
 
-            //var newCookie = new Cookie
-            //{
-            //    Id = cid.Id,
-            //    Title = cookie.Title,
-            //    Message = cookie.Message,
-            //    UserId = cookie.UserId
-            //};
             updatedCookie.Title = cookie.Title;
             updatedCookie.Message = cookie.Message;
             updatedCookie.UserId = cookie.UserId;   
