@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CookieJar.Models;
+using Azure.Core;
 
 namespace CookieJar.Controllers
 {
@@ -52,14 +53,26 @@ namespace CookieJar.Controllers
         // PUT: api/Cookies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCookie(int id, Cookie cookie)
+        public async Task<IActionResult> PutCookie(int id, CreateCookieDto cookie)
         {
-            if (id != cookie.Id)
+            var updatedCookie = await _context.Cookies.FindAsync(id);
+            if (updatedCookie == null)
             {
-                return BadRequest();
-            }
+                return NotFound();
+            }     
 
-            _context.Entry(cookie).State = EntityState.Modified;
+            //var newCookie = new Cookie
+            //{
+            //    Id = cid.Id,
+            //    Title = cookie.Title,
+            //    Message = cookie.Message,
+            //    UserId = cookie.UserId
+            //};
+            updatedCookie.Title = cookie.Title;
+            updatedCookie.Message = cookie.Message;
+            updatedCookie.UserId = cookie.UserId;   
+
+            _context.Entry(updatedCookie).State = EntityState.Modified;
 
             try
             {

@@ -49,6 +49,27 @@ namespace CookieJar.Controllers
             return user;
         }
 
+        // GET: api/Users/jay/1
+        [HttpGet("{email}/{password}")]
+        public async Task<ActionResult<User>> GetUser(string email, string password)
+        {
+            Console.WriteLine("Testing.... . is it workig");
+            Console.WriteLine(email);
+            if(_context.Users == null)
+            {
+                Console.WriteLine("Error user is not exists..... ...");
+            }
+            var user = await _context.Users.Where(c => c.Email == email && c.Password == password).FirstOrDefaultAsync();
+            
+            Console.WriteLine(user);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

@@ -8,6 +8,7 @@ namespace CookieJar.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
         }
         public DbSet<User> Users { get; set; }  
         public DbSet<Cookie> Cookies { get; set; }
