@@ -21,14 +21,14 @@ namespace CookieJar.Controllers
         }
 
         // GET: api/Tags
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tag>>> GetTags()
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<IEnumerable<Tag>>> GetTags(int id)
         {
           if (_context.Tags == null)
           {
               return NotFound();
           }
-            return await _context.Tags.ToListAsync();
+            return await _context.Tags.Where(c=> c.UserId == id).ToListAsync();
         }
 
         // GET: api/Tags/5
