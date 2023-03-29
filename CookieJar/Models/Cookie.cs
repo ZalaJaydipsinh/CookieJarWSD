@@ -11,7 +11,7 @@ namespace CookieJar.Models
         [JsonIgnore]
         public User User { get; set; }
         public int UserId { get; set; }
-        [JsonIgnore]
+        
         public IList<Tag> Tags { get; set; }
     }
 }

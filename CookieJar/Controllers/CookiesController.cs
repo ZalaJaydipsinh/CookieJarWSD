@@ -29,7 +29,7 @@ namespace CookieJar.Controllers
           {
               return NotFound();
           }
-            return await _context.Cookies.ToListAsync();
+            return await _context.Cookies.Include(c => c.Tags).ToListAsync();
         }
 
         // GET: api/Cookies/5

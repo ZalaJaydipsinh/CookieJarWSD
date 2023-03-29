@@ -9,6 +9,7 @@ namespace CookieJar.Models
         [JsonIgnore]
         public User User { get; set; }
         public int UserId { get; set; }
+        [JsonIgnore]
         public IList<Cookie> Cookies { get; set; }
     }
 }
