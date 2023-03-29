@@ -41,7 +41,7 @@ namespace CookieJar.Controllers
               return NotFound();
           }
             //var cookie = await _context.Cookies.FindAsync(id);
-            var cookie = await _context.Cookies.Include(c => c.Id == id).Include(c => c.Tags).FirstAsync();
+            var cookie = await _context.Cookies.Where(c => c.Id == id).Include(c => c.Tags).FirstAsync();
 
             if (cookie == null)
             {
