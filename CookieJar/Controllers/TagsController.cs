@@ -105,7 +105,7 @@ namespace CookieJar.Controllers
         }
 
 
-        // POST: api/AddCookieTag
+        // POST: api/Tags/CookieTag
         [HttpPost("CookieTag")]
         public async Task<ActionResult<Cookie>> PostCookieTag(AddCookieTagDto request)
         {
@@ -122,6 +122,25 @@ namespace CookieJar.Controllers
             await _context.SaveChangesAsync();
 
             return cookie;
+        }
+
+        // DELETE: api/Tags/5
+        [HttpDelete("CookieTag")]
+        public async Task<ActionResult<Boolean>> DeleteCookieTag(AddCookieTagDto request)
+        {
+            var cookie = await _context.Cookies.Where(c => c.Id == request.CookieId).Include(c => c.Tags).FirstOrDefaultAsync();
+            if (cookie == null)
+                return NotFound();
+
+            var tag = await _context.Tags.FindAsync(request.TagId);
+            if (tag == null)
+                return NotFound();
+
+
+            cookie.Tags.Remove(tag);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         // DELETE: api/Tags/5
