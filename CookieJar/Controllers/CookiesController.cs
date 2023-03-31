@@ -43,6 +43,8 @@ namespace CookieJar.Controllers
             //var cookie = await _context.Cookies.FindAsync(id);
             var cookie = await _context.Cookies.Where(c => c.Id == id).Include(c => c.Tags).FirstAsync();
 
+            _context.Cookies.OrderBy(o => Guid.NewGuid()).First();
+
             if (cookie == null)
             {
                 return NotFound();
@@ -50,6 +52,26 @@ namespace CookieJar.Controllers
 
             return cookie;
         }
+
+        // GET: api/Cookies/
+        [HttpGet("random")]
+        public async Task<ActionResult<Cookie>> GetRandomCookie()
+        {
+            if (_context.Cookies == null)
+            {
+                return NotFound();
+            }
+            //var cookie = await _context.Cookies.FindAsync(id);
+            var cookie = await _context.Cookies.Include(c => c.Tags).OrderBy(o => Guid.NewGuid()).FirstAsync();
+
+            if (cookie == null)
+            {
+                return NotFound();
+            }
+
+            return cookie;
+        }
+
 
         // PUT: api/Cookies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
