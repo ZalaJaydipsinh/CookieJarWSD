@@ -62,27 +62,16 @@ namespace CookieJar.Controllers
                 return NotFound();
             }
 
-
-
-            
-
             try
             {
                 var cookie = await _context.Cookies.Where(c => c.UserId == uid).Include(c => c.Tags).OrderBy(o => Guid.NewGuid()).FirstAsync();
                 return cookie;
-
             }
             catch(Exception ex)
             {
                 return NotFound(ex.Message);
             }
 
-            //if (cookie == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return cookie;
         }
 
 
