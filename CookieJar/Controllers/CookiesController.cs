@@ -54,22 +54,35 @@ namespace CookieJar.Controllers
         }
 
         // GET: api/Cookies/
-        [HttpGet("random")]
-        public async Task<ActionResult<Cookie>> GetRandomCookie()
+        [HttpGet("random/{uid}")]
+        public async Task<ActionResult<Cookie>> GetRandomCookie(int uid)
         {
             if (_context.Cookies == null)
             {
                 return NotFound();
             }
-            //var cookie = await _context.Cookies.FindAsync(id);
-            var cookie = await _context.Cookies.Include(c => c.Tags).OrderBy(o => Guid.NewGuid()).FirstAsync();
 
-            if (cookie == null)
+
+
+            
+
+            try
             {
-                return NotFound();
+                var cookie = await _context.Cookies.Where(c => c.UserId == uid).Include(c => c.Tags).OrderBy(o => Guid.NewGuid()).FirstAsync();
+                return cookie;
+
+            }
+            catch(Exception ex)
+            {
+                return NotFound(ex.Message);
             }
 
-            return cookie;
+            //if (cookie == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //return cookie;
         }
 
 
